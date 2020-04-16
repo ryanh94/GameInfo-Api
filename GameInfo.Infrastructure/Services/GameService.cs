@@ -21,7 +21,7 @@ namespace GameInfo.Infrastructure.Services
         {
             _repo = repo;
         }
-        public async Task<ServiceResult<List<GameResponse>>> GetGames()
+        public async Task<ServiceResult<List<GameResponse>>> GetGames(int pageSize = 20, int pageNumber = 1)
         {
             var result = new ServiceResult<List<GameResponse>>();
             result.Success = false;
@@ -29,7 +29,8 @@ namespace GameInfo.Infrastructure.Services
             {
                 try
                 {
-                    var games = await repo.Get<Game>(x => x.Id > 0).Select(x => new GameResponse { Id = x.Id, Name = x.Name, Rating = x.Rating, ReleaseDate = x.ReleaseDate.ToString("MM/dd/yyyy"), Description = x.Description }).ToListAsync();
+                    var skip = (pageNumber - 1) * pageSize;
+                    var games = await repo.Get<Game>(x => x.Id > 0).Skip(skip).Select(x => new GameResponse { Id = x.Id, Name = x.Name, Rating = x.Rating, ReleaseDate = x.ReleaseDate.ToString("MM/dd/yyyy"), Description = x.Description }).Take(pageSize).ToListAsync();
                     if (games.Count == 0)
                     {
                         return result;
