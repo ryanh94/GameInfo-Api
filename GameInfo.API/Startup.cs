@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -40,26 +41,27 @@ namespace GameInfo.API
 
             services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
             {
-                builder.AllowAnyOrigin()
+                builder.WithOrigins(Configuration["AppSettings:ClientAppUrl"])
                        .AllowAnyMethod()
                        .AllowAnyHeader();
             }));
 
-            services.AddControllers().AddNewtonsoftJson();
+            services.AddControllers();
 
-            services.AddDbContext<GameInfoContext>();
+            services.AddDbContext<GameInfoContext>(options => options.UseSqlServer(
+                                                   Configuration.GetConnectionString("Connection"))
+                                                   );
 
-            services.AddScoped<IRepository, GameInfoRepository>();
-            services.AddSingleton<IDBFactory, DBFactory>();
-            services.AddSingleton<IAuthenticateService, AuthenticateService>();
-            services.AddSingleton<ITokenBuilderService, TokenBuilderService>();
-            services.AddSingleton<ITokenProviderService, TokenProviderService>();
-            services.AddSingleton<ILoggerService, LoggerService>();
-            services.AddSingleton<IGameService, GameService>();
-            services.AddSingleton<IPasswordService, PasswordService>();
-            services.AddSingleton<IUserService, UserService>();
-            services.AddScoped<JWTAuthenticationEvents>();
-
+            services.AddTransient<IRepository, GameInfoRepository>();
+            services.AddTransient<IAuthenticateService, AuthenticateService>();
+            services.AddTransient<ITokenBuilderService, TokenBuilderService>();
+            services.AddTransient<ITokenProviderService, TokenProviderService>();
+            services.AddTransient<ILoggerService, LoggerService>();
+            services.AddTransient<IGameService, GameService>();
+            services.AddTransient<IPasswordService, PasswordService>();
+            services.AddTransient<IUserService, UserService>();
+            services.AddTransient<DevDatabaseSetup>();
+            services.AddTransient<JWTAuthenticationEvents>();
 
             services.AddSwaggerGen(c =>
             {
@@ -119,12 +121,13 @@ namespace GameInfo.API
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, DevDatabaseSetup seedDatabase)
         {
 
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                seedDatabase.Setup();
             }
 
             app.Use(async (context, next) =>
@@ -143,10 +146,8 @@ namespace GameInfo.API
             app.UseSwaggerUI(c =>
             {
                 c.RoutePrefix = string.Empty;
-                c.DocumentTitle = "Trak Global Telematics - Rewards API";
+                c.DocumentTitle = "GameInfo API";
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
-                //c.SwaggerEndpoint("/swagger/v2/swagger.json", "v2");
-                c.InjectStylesheet("/content/swagger/trakui.css");
                 c.DisplayRequestDuration();
             });
 

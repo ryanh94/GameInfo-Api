@@ -12,35 +12,28 @@ namespace GameInfo.Infrastructure.Services
 {
     public class UserService : IUserService
     {
-        private readonly IDBFactory _repo;
+        private readonly IRepository _repo;
         private readonly IPasswordService _passwordService;
-        public UserService(IDBFactory repo, IPasswordService passwordService)
+        public UserService(IRepository repo, IPasswordService passwordService)
         {
             _repo = repo;
             _passwordService = passwordService;
         }
         public async Task<bool> CreateUser(UserCreation userCreation)
         {
-            using (var con = _repo.GetInstance())
+
+            var exists = await _repo.Get<User>(x => x.Username.ToLower() == userCreation.Username.ToLower()).FirstOrDefaultAsync();
+
+            if (exists != null)
             {
-                var exists = await con.Get<User>(x => x.Username.ToLower() == userCreation.Username.ToLower()).FirstOrDefaultAsync();
-
-                if (exists != null)
-                {
-                    return false;
-                }
-                var password = _passwordService.GeneratePassword(userCreation.Password);
-                try
-                {
-                    con.Add<User>(new User { Username = userCreation.Username.ToLower(), Password = password });
-                    await con.Commit();
-                }
-                catch (Exception e)
-                {
-
-                    return false;
-                }
+                return false;
             }
+            var password = _passwordService.GeneratePassword(userCreation.Password);
+
+            _repo.Add<User>(new User { Username = userCreation.Username.ToLower(), Password = password });
+            await _repo.Commit();
+
+
             return true;
         }
     }

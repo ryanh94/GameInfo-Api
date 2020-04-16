@@ -14,7 +14,6 @@ namespace GameInfo.Infrastructure.Repository.Context
         }
         public DbSet<User> User { get; set; }
         public DbSet<Game> Game { get; set; }
-        public DbSet<Audit> Audit { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Game>().HasQueryFilter(p => p.Deleted == false);

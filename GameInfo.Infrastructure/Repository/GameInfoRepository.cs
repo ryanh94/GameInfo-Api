@@ -64,32 +64,8 @@ namespace GameInfo.Infrastructure.Repository
         }
         public async Task<int> Commit()
         {
-            try
-            {
-                return await DbContext.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
+            return await DbContext.SaveChangesAsync();
 
-                throw ex;
-            }
-        }
-        private bool disposed = false;
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!this.disposed)
-            {
-                if (disposing)
-                {
-                    DbContext.Dispose();
-                }
-            }
-            this.disposed = true;
-        }
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
         }
     }
 }

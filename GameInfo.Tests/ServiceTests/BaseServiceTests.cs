@@ -8,15 +8,12 @@ namespace GameInfo.Tests.ServiceTests
 {
     public abstract class BaseServiceTests
     {
-        public Mock<IDBFactory> _DBFactory { get; private set; }
         public Mock<IRepository> _Repo { get; private set; }
 
         [TestInitialize]
         public void Init()
         {
-            _DBFactory = new Mock<IDBFactory>();
             _Repo = new Mock<IRepository>();
-            _DBFactory.Setup(x => x.GetInstance()).Returns(_Repo.Object);
         }
     }
 }

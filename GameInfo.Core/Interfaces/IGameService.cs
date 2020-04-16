@@ -9,7 +9,7 @@ namespace GameInfo.Core.Interfaces
 {
     public interface IGameService
     {
-        public Task<ServiceResult<List<GameResponse>>> GetGames();
+        public Task<ServiceResult<List<GameResponse>>> GetGames(int pageSize = 20, int pageNumber = 1);
         public Task<ServiceResult<string>> UpdateGames(List<GameUpdateRequest> gamesToUpdate);
         public Task<ServiceResult<string>> UpdateGame(GameUpdateRequest gameToUpdate);
         public Task<ServiceResult<string>> InsertGames(List<GameRequest> gamesToInsert);

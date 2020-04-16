@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace GameInfo.Infrastructure.Repository.Interfaces
 {
-    public interface IRepository : IDisposable
+    public interface IRepository
     {
         Task<TEntity> GetById<TEntity>(int Id) where TEntity : class;
 

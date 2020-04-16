@@ -1,42 +1,27 @@
 ﻿using GameInfo.Core.Interfaces;
-using GameInfo.Core.Models.Entities;
-using GameInfo.Infrastructure.Repository.Interfaces;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GameInfo.Infrastructure.Services
 {
     public class LoggerService : ILoggerService
     {
-        private readonly IDBFactory _repo;
+        private readonly ILogger<LoggerService> _logger;
 
-        public LoggerService(IDBFactory repo)
+        public LoggerService(ILogger<LoggerService> logger)
         {
-            _repo = repo;
+            _logger = logger;
         }
-        public async Task LogRequest(int userid, string requestbody, string responsebody)
+        public void LogRequest(int userId, string requestBody, string responseBody)
         {
-            try
+            _logger.LogTrace("HTTP Request, Created: {0}", JsonConvert.SerializeObject(new
             {
-                using (var repo = _repo.GetInstance())
-                {
-                    repo.Add(new Audit
-                    {
-                        Created = DateTimeOffset.UtcNow,
-                        Request = requestbody,
-                        Response = responsebody,
-                        UserId = userid
-                    });
-
-                    await repo.Commit();
-                }
-            }
-            catch (Exception)
-            {
-                // Supress errors to enable request to pass
-            }
+                Created = DateTimeOffset.UtcNow,
+                Request = requestBody,
+                Response = responseBody,
+                UserId = userId
+            }));
         }
     }
 }

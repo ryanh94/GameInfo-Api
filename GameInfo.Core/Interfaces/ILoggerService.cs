@@ -7,6 +7,6 @@ namespace GameInfo.Core.Interfaces
 {
     public interface ILoggerService
     {
-        Task LogRequest(int userid, string requestbody, string responsebody);
+        void LogRequest(int userId, string requestBody, string responseBody);
     }
 }

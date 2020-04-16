@@ -2,7 +2,6 @@
 using GameInfo.Core.Models;
 using GameInfo.Core.Models.Entities;
 using GameInfo.Core.Models.Requests;
-using GameInfo.Infrastructure.Repository.Interfaces;
 using GameInfo.Infrastructure.Services;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MockQueryable.Moq;
@@ -37,7 +36,7 @@ namespace GameInfo.Tests.ServiceTests
             tokenBuilder.Setup(x => x.GetToken(It.IsAny<int>())).Returns(token);
             var passwordService = new Mock<IPasswordService>();
             passwordService.Setup(x => x.ValidatePassword(It.IsAny<string>(), It.IsAny<string>())).Returns(true);
-            var authService = new AuthenticateService(_DBFactory.Object, tokenBuilder.Object, passwordService.Object);
+            var authService = new AuthenticateService(_Repo.Object, tokenBuilder.Object, passwordService.Object);
             // Act
             var results = await authService.Authenticate(request);
 
@@ -57,7 +56,7 @@ namespace GameInfo.Tests.ServiceTests
 
             var tokenBuilder = new Mock<ITokenBuilderService>();
             var passwordService = new Mock<IPasswordService>();
-            var authService = new AuthenticateService(_DBFactory.Object, tokenBuilder.Object, passwordService.Object);
+            var authService = new AuthenticateService(_Repo.Object, tokenBuilder.Object, passwordService.Object);
             // Act
             var results = await authService.Authenticate(request);
 
