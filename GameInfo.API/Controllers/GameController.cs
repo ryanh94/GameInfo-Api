@@ -22,7 +22,6 @@ namespace GameInfo.API.Controllers
         }
 
         [HttpGet]
-        [Route("GetAll")]
         public async Task<ActionResult> GetAll()
         {
             var response = await _gameService.GetGames();
@@ -38,7 +37,6 @@ namespace GameInfo.API.Controllers
         }
 
         [HttpPost]
-        [Route("Add")]
         public async Task<ActionResult> Add([FromBody]GameRequest insertGame)
         {
             if (ModelState.IsValid)
@@ -46,7 +44,7 @@ namespace GameInfo.API.Controllers
                 var response = await _gameService.InsertGame(insertGame);
                 if (response.Success)
                 {
-                    return Ok(response.Value);
+                    return NoContent();
                 }
                 else
                 {
@@ -59,19 +57,19 @@ namespace GameInfo.API.Controllers
             }
         }
 
-        [HttpPut]
-        public async Task<ActionResult> Update([FromBody]GameUpdateRequest gameUpdate)
+        [HttpPut("{id}")]
+        public async Task<ActionResult> Update(int id, [FromBody]GameUpdateRequest gameUpdate)
         {
             if (ModelState.IsValid)
             {
-                var response = await _gameService.UpdateGame(gameUpdate);
+                var response = await _gameService.UpdateGame(id, gameUpdate);
                 if (response.Success)
                 {
-                    return Ok(response.Value);
+                    return Ok();
                 }
                 else
                 {
-                    return BadRequest(response.Value);
+                    return BadRequest(response);
                 }
             }
             else
@@ -79,8 +77,7 @@ namespace GameInfo.API.Controllers
                 return BadRequest(ModelState);
             }
         }
-        [HttpDelete]
-        [Route("Delete")]
+        [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)
         {
             if (ModelState.IsValid)
@@ -88,7 +85,7 @@ namespace GameInfo.API.Controllers
                 var response = await _gameService.DeleteGame(id);
                 if (response.Success)
                 {
-                    return Ok(response.Value);
+                    return NoContent();
                 }
                 else
                 {

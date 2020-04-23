@@ -123,20 +123,19 @@ namespace GameInfo.API
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, DevDatabaseSetup seedDatabase)
         {
+            app.UseCors("MyPolicy");
 
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
                 seedDatabase.Setup();
             }
-
-            app.Use(async (context, next) =>
-            {
-                context.Request.EnableBuffering();
-                await next();
-            });
-
-            app.UseHttpsRedirection();
+            
+            //app.Use(async (context, next) =>
+            //{
+            //    context.Request.EnableBuffering();
+            //    await next();
+            //});
 
             // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();
@@ -152,12 +151,12 @@ namespace GameInfo.API
             });
 
             app.UseRouting();
-            app.UseCors("MyPolicy");
+          
 
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.UseMiddleware<Handlers.LogMiddleware>();
+            //app.UseMiddleware<Handlers.LogMiddleware>();
 
             app.UseEndpoints(endpoints =>
             {

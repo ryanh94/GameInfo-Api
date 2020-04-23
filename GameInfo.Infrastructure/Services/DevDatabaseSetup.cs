@@ -34,7 +34,7 @@ namespace GameInfo.Infrastructure.Services
                 _context.Add(new User
                 {
                     Username = "dev",
-                    Password = "AJwVUxcnS1/My268csKdzqIthWksh2t6idwybqbwWM6pM01SCSANatdOi5pGksrbGw==" /*Password1*/
+                    Password = "AJYEm7aU2BsFfaHrD8SKaY+4zD428ztsbQ==" /*Password1*/
                 }); 
             }
             _context.SaveChanges();

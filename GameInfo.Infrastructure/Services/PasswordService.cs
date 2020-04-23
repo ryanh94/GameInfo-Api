@@ -9,10 +9,10 @@ namespace GameInfo.Infrastructure.Services
 {
     public class PasswordService : IPasswordService
     {
-        private const KeyDerivationPrf Pbkdf2Prf = KeyDerivationPrf.HMACSHA1; // default for Rfc2898DeriveBytes
-        private const int Pbkdf2IterCount = 1000; // default for Rfc2898DeriveBytes
-        private const int Pbkdf2SubkeyLength = 256 / 8; // 256 bits
-        private const int SaltSize = 128 / 8; // 128 bits
+        private const KeyDerivationPrf Pbkdf2Prf = KeyDerivationPrf.HMACSHA1;
+        private const int Pbkdf2IterCount = 1000;
+        private const int Pbkdf2SubkeyLength = 128 / 8;
+        private const int SaltSize = 64 / 8;
         public string GeneratePassword(string password)
         {
             byte[] salt = new byte[SaltSize];

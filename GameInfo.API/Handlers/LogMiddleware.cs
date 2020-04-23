@@ -51,7 +51,7 @@ namespace GameInfo.API.Handlers
 
                     var claims = context.Response.HttpContext.User.Claims;
                     var userid = claims.Where(c => c.Type.ToLower() == "userid").FirstOrDefault()?.Value;
-                    _logger.LogRequest(Convert.ToInt32(userid), request, $"{context.Response.StatusCode}//" + $"Response Body: {response}");
+                    _logger.LogRequest(Convert.ToInt32(userid), "", $"{context.Response.StatusCode}//" + $"Response Body: ");
                 }
             }
 

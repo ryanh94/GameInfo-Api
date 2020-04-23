@@ -24,17 +24,17 @@ namespace GameInfo.Infrastructure.Services
             var result = new ServiceResult<List<GameResponse>>();
             var repo = _repo;
             var skip = (pageNumber - 1) * pageSize;
-            var games = await repo.Get<Game>(x => x.Id > 0).Skip(skip).Select(x => new GameResponse { Id = x.Id, Name = x.Name, Rating = x.Rating, ReleaseDate = x.ReleaseDate.ToString("MM/dd/yyyy"), Description = x.Description }).Take(pageSize).ToListAsync();
+            var games = await repo.Get<Game>(x => x.Id > 0).Skip(skip).Select(x => new GameResponse { Id = x.Id, Name = x.Name, Rating = x.Rating, ReleaseDate = x.ReleaseDate, Description = x.Description }).Take(pageSize).ToListAsync();
 
             result.Success = true;
             result.Value = new List<GameResponse>(games);
             return result;
         }
-        public async Task<ServiceResult<string>> UpdateGame(GameUpdateRequest update)
+        public async Task<ServiceResult<string>> UpdateGame(int id, GameUpdateRequest update)
         {
             var result = new ServiceResult<string>();
             var repo = _repo;
-            var exists = await repo.Get<Game>(game => game.Id == update.Id).FirstOrDefaultAsync();
+            var exists = await repo.Get<Game>(game => game.Id == id).FirstOrDefaultAsync();
             if (exists != null)
             {
                 exists.Name = !string.IsNullOrEmpty(update.Name) ? update.Name : exists.Name;
