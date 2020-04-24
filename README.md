@@ -8,8 +8,8 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 
-SQL server express
-Visual studio or IDE
+SQL server express,
+Visual studio or IDE,
 dot net core sdk
 
 ### Installing
